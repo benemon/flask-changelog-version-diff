@@ -8,7 +8,7 @@ The **Changelog Diff Viewer** is a Flask web application that allows users to vi
 - Fetches `CHANGELOG.md` from a specified GitHub URL.
 - Supports version headers with or without markdown links.
 - Displays each version section as a collapsible block for easy navigation.
-- Simple, clean UI with a calm color palette for a modern look.
+- Maintains safety by sanitizing embedded HTML, preserving formatting without structural interference.
 
 ## Requirements
 
@@ -41,10 +41,13 @@ The application requires the following Python packages:
 - `Flask` - for handling HTTP requests and serving the web application.
 - `requests` - for fetching the `CHANGELOG.md` content from GitHub.
 - `markdown2` - for converting markdown content to HTML.
+- `packaging` - for handling version parsing and comparison.
+- `bleach` - for selectively sanitizing embedded HTML in the markdown output.
+- `markupsafe` - for escaping HTML when necessary.
 
 ## Configuration
 
-The application has no configuration requirements beyond dependencies. Ensure the Python packages in `requirements.txt` are installed.
+The application requires no additional configuration beyond the dependencies in `requirements.txt`. Ensure all packages are installed.
 
 ## Running the Application
 
@@ -56,15 +59,17 @@ With the virtual environment activated (if you are using one), run the following
 python app.py
 ```
 
-This command will start the Flask development server on `http://0.0.0.0:8181`.
+This command will start the Flask development server, binding it to `0.0.0.0` on port `8181`, making it accessible from any IP address on the local network.
 
 ### Step 2: Access the Application
 
 Open a web browser and navigate to:
 
 ```
-http://127.0.0.1:8181
+http://<your-ip-address>:8181
 ```
+
+Replace `<your-ip-address>` with the IP address of the machine where the server is running.
 
 ## Usage
 
@@ -87,6 +92,7 @@ Click **Get Differences** to display the differences between these versions.
 
 - **Versions Not Found**: Ensure the version format entered matches what’s in the changelog. For example, if versions are encapsulated in brackets (`[v1.0.0]`), enter `v1.0.0` in the form.
 - **Fetching Errors**: Ensure the GitHub URL provided is a valid raw URL (e.g., `https://raw.githubusercontent.com/...`) and the file is accessible.
+- **HTML Display Issues**: Embedded HTML in the markdown is selectively sanitized to retain formatting without affecting structure.
 
 ## Deployment
 
@@ -95,10 +101,10 @@ For production deployment, consider using a WSGI server like **gunicorn** and a 
 ### Example Gunicorn Command
 
 ```bash
-gunicorn -w 4 -b 0.0.0.0:5000 app:app
+gunicorn -w 4 -b 0.0.0.0:8181 app:app
 ```
 
-This command runs the application with 4 workers, binding to all interfaces on port 5000.
+This command runs the application with 4 workers, binding to all interfaces on port 8181.
 
 ## File Structure
 

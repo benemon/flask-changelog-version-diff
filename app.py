@@ -1,8 +1,11 @@
 from flask import Flask, request, render_template, jsonify
+from packaging import version  # Add this import for version comparison
+from markupsafe import escape  # Import escape to handle embedded HTML in markdown
 import requests
 import re
 import markdown2  # For converting markdown to HTML
 import logging
+import bleach
 
 app = Flask(__name__)
 
@@ -34,8 +37,8 @@ def compare_versions():
     except requests.exceptions.RequestException:
         return jsonify({"detail": "Failed to fetch the changelog file."}), 400
 
-    # Capture content between the new and old versions inclusively
-    main_pattern = rf"(##\s*\[?v?{re.escape(version2)}\]?\(?.*?\)?\b[\s\S]*?)(?=(##\s*\[?v?{re.escape(version1)}\]?\(?.*?\)?\b|\Z))"
+    # Flexible pattern to capture all content between the specified versions
+    main_pattern = rf"(#{{1,6}}\s*\[?v?{re.escape(version2)}\]?\(?.*?\)?\b[\s\S]*?)(?=(#{{1,6}}\s*\[?v?{re.escape(version1)}\]?\(?.*?\)?\b|\Z))"
     main_match = re.search(main_pattern, changelog_content, re.MULTILINE | re.DOTALL)
 
     if not main_match:
@@ -45,43 +48,76 @@ def compare_versions():
     captured_content = main_match.group(0)
 
     # Split captured content by headers to separate each version section
-    section_pattern = r"(##\s*\[?v?\d+\.\d+\.\d+\]?\(?.*?\)?\b)"
+    section_pattern = r"(#{1,6}\s*\[?v?\d+\.\d+\.\d+[-\w.]*\]?\(?.*?\)?\b)"
     sections = re.split(section_pattern, captured_content)
 
-    # Initialize collapsible content and count the releases
-    collapsible_content = ""
-    release_count = 0
+    # Initialize list to store section details
+    collapsible_sections = []
 
-    # Process sections into collapsible elements, skipping any empty initial split
+    # Convert specified versions to `version.Version` objects for comparison
+    version1_normalized = re.sub(r"-(\w+)\.(\d+)", r"\1\2", version1)
+    version2_normalized = re.sub(r"-(\w+)\.(\d+)", r"\1\2", version2)
+    min_version = version.parse(version1_normalized)
+    max_version = version.parse(version2_normalized)
+
+    # Define allowed tags and attributes
+    allowed_tags = [
+        "p", "a", "ul", "ol", "li", "strong", "em", "code", "pre", "blockquote",
+        "h1", "h2", "h3", "h4", "h5", "h6", "table", "thead", "tbody", "tr", "th", "td"
+    ]
+    allowed_attributes = {"a": ["href", "title"], "img": ["src", "alt", "title"]}
+
+    # Process sections into collapsible elements
     for i in range(1, len(sections), 2):
         raw_header = sections[i]
         content = sections[i + 1] if (i + 1) < len(sections) else ""
         
-        # Extract just the version number from the header
-        version_match = re.search(r"\d+\.\d+\.\d+", raw_header)
-        header = version_match.group(0) if version_match else raw_header.strip()
+        version_match = re.search(r"\d+\.\d+\.\d+[-\w.]*", raw_header)
+        if not version_match:
+            continue
 
+        display_version = version_match.group(0)
+        normalized_version = re.sub(r"-(\w+)\.(\d+)", r"\1\2", display_version)
+        
+        try:
+            section_version = version.parse(normalized_version)
+        except version.InvalidVersion:
+            continue
+
+        if section_version < min_version or section_version > max_version:
+            continue
+
+        # Convert markdown to HTML and sanitize embedded HTML
         content_html = markdown2.markdown(content)
+        content_html = bleach.clean(content_html, tags=allowed_tags, attributes=allowed_attributes)
 
-        # Add collapsible HTML for each version section
+        # Append the section data to collapsible_sections
+        collapsible_sections.append({
+            "version": section_version,
+            "header": display_version,
+            "content_html": content_html
+        })
+
+    # Sort sections by version in descending order
+    collapsible_sections.sort(key=lambda x: x["version"], reverse=True)
+
+    # Generate HTML content for each sorted section
+    collapsible_content = ""
+    for section in collapsible_sections:
         collapsible_content += f"""
             <div class="collapsible">
-                <button class="collapsible-btn">{header}</button>
+                <button class="collapsible-btn">{section['header']}</button>
                 <div class="collapsible-content">
-                    {content_html}
+                    {section['content_html']}
                 </div>
             </div>
         """
-        
-        # Increment the release count
-        release_count += 1
 
     # Return the formatted collapsible content and release count as JSON
     return jsonify({
         "changes": collapsible_content,
-        "release_count": release_count
+        "release_count": len(collapsible_sections)
     })
-
 
 if __name__ == "__main__":
      app.run(host="0.0.0.0", port=8181)
