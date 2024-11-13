@@ -12,9 +12,14 @@ document.getElementById('changelogForm').addEventListener('submit', async (event
     });
 
     const resultContainer = document.getElementById('result');
+    const releaseCountContainer = document.getElementById('releaseCount');
+
     if (response.ok) {
         const data = await response.json();
         resultContainer.innerHTML = data.changes;
+        
+        // Display the release count
+        releaseCountContainer.textContent = `Number of Releases: ${data.release_count}`;
 
         // Apply collapsible behavior with icon rotation
         document.querySelectorAll(".collapsible-btn").forEach(button => {
@@ -35,5 +40,6 @@ document.getElementById('changelogForm').addEventListener('submit', async (event
     } else {
         const error = await response.json();
         resultContainer.innerHTML = `Error: ${error.detail}`;
+        releaseCountContainer.textContent = '';  // Clear release count if there's an error
     }
 });

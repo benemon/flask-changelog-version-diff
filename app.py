@@ -48,8 +48,9 @@ def compare_versions():
     section_pattern = r"(##\s*\[?v?\d+\.\d+\.\d+\]?\(?.*?\)?\b)"
     sections = re.split(section_pattern, captured_content)
 
-    # Initialize collapsible content
+    # Initialize collapsible content and count the releases
     collapsible_content = ""
+    release_count = 0
 
     # Process sections into collapsible elements, skipping any empty initial split
     for i in range(1, len(sections), 2):
@@ -71,9 +72,16 @@ def compare_versions():
                 </div>
             </div>
         """
+        
+        # Increment the release count
+        release_count += 1
 
-    # Return the formatted collapsible content as JSON
-    return jsonify({"changes": collapsible_content})
+    # Return the formatted collapsible content and release count as JSON
+    return jsonify({
+        "changes": collapsible_content,
+        "release_count": release_count
+    })
+
 
 if __name__ == "__main__":
      app.run(host="0.0.0.0", port=8181)
