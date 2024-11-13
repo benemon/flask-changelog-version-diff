@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Changelog Diff Viewer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="{{ url_for('static', filename='main.js') }}" defer></script>
+</head>
+<body>
+    <h1>Changelog Diff Viewer</h1>
+    <form id="changelogForm">
+        <label for="url">Changelog URL:</label>
+        <input type="url" id="url" name="url" required placeholder="https://raw.githubusercontent.com/username/repo/main/CHANGELOG.md">
+        <br>
+        <label for="version2">New Version:</label>
+        <input type="text" id="version2" name="version2" required placeholder="v1.1.0">
+        <br>
+        <label for="version1">Old Version:</label>
+        <input type="text" id="version1" name="version1" required placeholder="v1.0.0">
+        <br>
+        <button type="submit">Get Differences</button>
+    </form>
+    <div id="result"></div>
+</body>
+</html>

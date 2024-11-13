@@ -1,0 +1,170 @@
+/* Basic Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f3f6f9;  /* Light gray-blue background */
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 20px;
+    width: 100%;
+}
+
+/* Heading */
+h1 {
+    color: #4a5c6b;  /* Muted blue-gray */
+    font-weight: 600;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* Form Styles */
+#changelogForm {
+    background-color: #ffffff;  /* White background for the form */
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 800px;
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+    color: #4a5c6b;
+}
+
+input[type="url"], input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #d1d9e0;  /* Light gray border */
+    border-radius: 5px;
+    font-size: 14px;
+    transition: border-color 0.3s;
+}
+
+input[type="url"]:focus, input[type="text"]:focus {
+    border-color: #5e99c7;  /* Calming blue border on focus */
+    outline: none;
+}
+
+button[type="submit"] {
+    background-color: #5e99c7;  /* Calming blue */
+    color: white;
+    padding: 10px 15px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 0.3s;
+}
+
+button[type="submit"]:hover {
+    background-color: #4b84a5;  /* Slightly darker blue on hover */
+}
+
+/* Result Container */
+#result {
+    width: 100%;
+    max-width: 800px;
+    margin-top: 20px;
+}
+
+/* Collapsible Button Styles */
+.collapsible {
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+.collapsible-btn {
+    background-color: #e3ebf3;  /* Light blue-gray */
+    color: #4a5c6b;  /* Muted blue-gray text */
+    cursor: pointer;
+    padding: 12px 20px;
+    width: 100%;
+    text-align: left;
+    border: none;
+    border-radius: 5px;
+    font-size: 15px;
+    outline: none;
+    transition: background-color 0.3s, transform 0.2s;
+    font-weight: 500;
+    position: relative;
+}
+
+.collapsible-btn::after {
+    content: '▼';  /* Down arrow */
+    font-size: 12px;
+    color: #4a5c6b;
+    position: absolute;
+    right: 20px;
+    transition: transform 0.3s ease;
+}
+
+.collapsible-btn.active::after {
+    transform: rotate(-180deg);  /* Rotate arrow to indicate open state */
+}
+
+.collapsible-btn:hover {
+    background-color: #d1d9e0;  /* Slightly darker blue-gray on hover */
+    transform: scale(1.02);
+}
+
+.collapsible-btn:active {
+    transform: scale(1);
+}
+
+.collapsible-content {
+    padding: 15px;
+    display: none;
+    overflow: hidden;
+    background-color: #ffffff;  /* White background for content */
+    border: 1px solid #d1d9e0;
+    border-top: none;
+    border-radius: 0 0 5px 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    transition: max-height 0.3s ease;
+}
+
+/* Changelog Content Styling */
+.collapsible-content h3, .collapsible-content h4 {
+    color: #5e99c7;  /* Calming blue */
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.collapsible-content p {
+    margin-bottom: 10px;
+    color: #333;
+    line-height: 1.6;
+}
+
+.collapsible-content ul {
+    padding-left: 20px;
+    margin-bottom: 10px;
+}
+
+.collapsible-content li {
+    margin-bottom: 8px;
+    color: #4a5c6b;
+}
+
+.collapsible-content code {
+    background-color: #f3f3f3;
+    padding: 2px 4px;
+    border-radius: 4px;
+    font-size: 14px;
+    color: #d63384;
+}
