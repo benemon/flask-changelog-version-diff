@@ -10,13 +10,13 @@
     <h1>Changelog Diff Viewer</h1>
     <form id="changelogForm">
         <label for="url">Changelog URL:</label>
-        <input type="url" id="url" name="url" required placeholder="https://raw.githubusercontent.com/username/repo/main/CHANGELOG.md">
+        <input type="url" id="url" name="url" required placeholder="https://raw.githubusercontent.com/hashicorp/vault/refs/heads/main/CHANGELOG.md">
         <br>
         <label for="version2">New Version:</label>
-        <input type="text" id="version2" name="version2" required placeholder="v1.1.0">
+        <input type="text" id="version2" name="version2" required placeholder="1.18.0">
         <br>
         <label for="version1">Old Version:</label>
-        <input type="text" id="version1" name="version1" required placeholder="v1.0.0">
+        <input type="text" id="version1" name="version1" required placeholder="1.17.0">
         <br>
         <button type="submit">Get Differences</button>
     </form>
