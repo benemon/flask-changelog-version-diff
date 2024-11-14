@@ -3,7 +3,7 @@ from packaging import version  # Add this import for version comparison
 from markupsafe import escape  # Import escape to handle embedded HTML in markdown
 import requests
 import re
-import markdown2  # For converting markdown to HTML
+import markdown  # For converting markdown to HTML
 import logging
 import bleach
 
@@ -88,7 +88,7 @@ def compare_versions():
             continue
 
         # Convert markdown to HTML and sanitize embedded HTML
-        content_html = markdown2.markdown(content, extras=["extra"])
+        content_html = markdown.markdown(content, extras=["extra"])
         content_html = bleach.clean(content_html, tags=allowed_tags, attributes=allowed_attributes)
 
         # Append the section data to collapsible_sections
