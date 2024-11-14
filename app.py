@@ -88,7 +88,7 @@ def compare_versions():
             continue
 
         # Convert markdown to HTML and sanitize embedded HTML
-        content_html = markdown2.markdown(content)
+        content_html = markdown2.markdown(content, extras=["extra"])
         content_html = bleach.clean(content_html, tags=allowed_tags, attributes=allowed_attributes)
 
         # Append the section data to collapsible_sections
@@ -116,7 +116,8 @@ def compare_versions():
     # Return the formatted collapsible content and release count as JSON
     return jsonify({
         "changes": collapsible_content,
-        "release_count": len(collapsible_sections)
+        "release_count": len(collapsible_sections),
+        "changelog_url": url
     })
 
 if __name__ == "__main__":
