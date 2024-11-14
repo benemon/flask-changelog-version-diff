@@ -75,11 +75,11 @@ button[type="submit"]:hover {
     background-color: #4b84a5;  /* Slightly darker blue on hover */
 }
 
-/* Result Container */
+/* Set a maximum width for the main container */
 #result {
-    width: 100%;
-    max-width: 800px;
-    margin-top: 20px;
+    max-width: 1000px;  /* Adjust as needed for wider content */
+    width: 90%;        /* Responsive width that adapts to screen size */
+    padding: 10px;
 }
 
 /* Collapsible Button Styles */
@@ -126,16 +126,16 @@ button[type="submit"]:hover {
     transform: scale(1);
 }
 
+/* Content inside collapsible */
 .collapsible-content {
-    padding: 15px;
-    display: none;
+    max-height: 0;
     overflow: hidden;
-    background-color: #ffffff;  /* White background for content */
+    background-color: #ffffff;
     border: 1px solid #d1d9e0;
-    border-top: none;
+    border-top: none;  /* Prevents overlap with header */
     border-radius: 0 0 5px 5px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-    transition: max-height 0.3s ease;
+    transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Changelog Content Styling */
